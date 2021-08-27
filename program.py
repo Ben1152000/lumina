@@ -72,6 +72,7 @@ class Program:
         }
         
         self.reset()
+        self.running = False
 
     def reset(self):
         self.stack = deque()
@@ -90,7 +91,7 @@ class Program:
         self.pc += 1
 
     def execute(self):
-        while True:
+        while self.running:
             self.step()
     
     # read byte from data
@@ -322,50 +323,62 @@ class Program:
         if (self.debug):
             print('\tget_length')
         self.stack.appendleft(0)
+        # stub
 
     def get_wall_time(self):
         if (self.debug):
             print('\tget_wall_time')
+        # stub
 
     def get_precise_time(self):
         if (self.debug):
             print('\tget_precise_time')
+        # stub
 
     def set_pixel(self):
         if (self.debug):
             print('\tset_pixel')
+        # stub
 
     def show(self):
         if (self.debug):
             print('\tshow')
+        # stub
 
     def random_int(self):
         if (self.debug):
             print('\trandom_int')
+        # stub
 
     def get_pixel(self):
         if (self.debug):
             print('\tget_pixel')
+        # stub
 
     def set_all_pixels(self):
         if (self.debug):
             print('\tset_all_pixels')
+        # stub
 
     def swap(self):
         if (self.debug):
             print('\tswap')
+        # stub
 
     def dump(self):
         if (self.debug):
             print('\tdump')
+        # stub
 
     def yield_(self):
         if (self.debug):
             print('\tyield_')
+        # stub
 
     def twobyte(self):
         if (self.debug):
             print('\ttwobyte')
+        # stub
 
 
 
