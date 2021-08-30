@@ -1,7 +1,7 @@
 from flask import Flask, request, abort, render_template
 from flask_restful import Resource, Api
 from program import Program
-from multiprocessing import Process, Value
+from multiprocessing import Process, Pipe
 from ctypes import c_bool
 import re, os, subprocess
 
@@ -9,17 +9,16 @@ class ProgramProcess(Process):
 
     def __init__(self, name, data):
         super().__init__()
-        self.running = Value(c_bool, True)
+        self.pipe_in, self.pipe_out = Pipe()
         self.program = Program(name=name, data=data)
 
     def run(self):
-        while self.program.running and self.running.value:
-            self.program.step()
-        self.stop()
-    
-    def stop(self):
-        self.running.value = False
-        # self.program.terminate()
+        while True:
+            if self.program and self.program.running:
+                self.program.step()
+            if self.pipe_out.poll():
+                self.program = self.pipe_out.recv()
+                assert type(self.program) == Program
 
 binaries = {}
 BUILTIN = ['idle', 'rainbow']
@@ -100,10 +99,10 @@ class ExecuteProgramResource(Resource):
         global binaries, current
         if name not in binaries:
             abort(404, "The program does not exist.")
-        current.stop()  # kill previous program
-        current.join()  # make sure the process has ended
-        current = ProgramProcess(name=name, data=binaries[name])
-        current.start()
+        current.pipe_in.send(Program(
+            name=name,
+            data=binaries[name]
+        ))
         return '', 204
 
 api.add_resource(ExecuteProgramResource, '/execute/<string:name>')
@@ -119,14 +118,12 @@ class ColorResource(Resource):
             abort(404, "Invalid color code.")
         value = int(value, 16)
         r, g, b = ((value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff)
-        current.stop()  # kill previous program
-        current.join()  # make sure the process has ended
-        current = ProgramProcess(name='color', data=bytes(
+        current.pipe_in.send(Program(
+            name='color', data=bytes(
             [0x31,    r,    g,    b,
              0x00, 0xe7, 0x11, 0x0a,
-             0xf9, 0x40, 0x06, 0x00]
+             0xf9, 0x40, 0x06, 0x00])
         ))
-        current.start()
         return '', 204
 
 api.add_resource(ColorResource, '/color/<string:value>')

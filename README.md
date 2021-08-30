@@ -9,3 +9,8 @@
 
 ## Notes:
 - https://www.youtube.com/watch?v=KJupt2LIjp4
+
+
+## Todo:
+
+- fix so only one open process is created, rather than many subprocesses
