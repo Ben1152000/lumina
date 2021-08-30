@@ -1,3 +1,6 @@
+This project is a python adaption of [PWLP](https://github.com/pixelspark/pwlp) and more details of Tommy's project can be found in [this blog post](https://pixelspark.nl/2021/over-engineering-an-rgb-led-strip-controller-lets-write-a-custom-programming-language-and-instruction-set).
+
+
 ## To run:
 
 ```sudo python3.7 server.py```
