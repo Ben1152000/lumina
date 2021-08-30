@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Lumina</title>
+  <style>
+    .color-container {
+      display: table;
+      margin: auto;
+      margin-top: 10rem;
+      padding: 1rem 1.5rem;
+      background-color: white;
+    }
+    .slider-container {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+  <script>
+    function update() {
+      var r = document.getElementById('red').value;
+      var g = document.getElementById('green').value;
+      var b = document.getElementById('blue').value;
+      var color = parseInt(r, 10)
+          + (parseInt(g, 10) << 8)
+          + (parseInt(b, 10) << 16);
+      var color_string = color.toString(16).padStart(6, '0');
+      document.body.style.backgroundColor = '#' + color_string;
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://192.168.1.2:7990/color/" + color_string, true);
+      xhr.send();
+    }
+  </script>
+</head>
+<body>
+  <div class="color-container">
+  <div class="slider-container">
+    <input type="range" min="0" max="255" value="255" class="slider" id="red" onchange="update()">
+  </div>
+  <div class="slider-container">
+    <input type="range" min="0" max="255" value="255" class="slider" id="green" onchange="update()">
+  </div>
+  <div class="slider-container">
+    <input type="range" min="0" max="255" value="255" class="slider" id="blue" onchange="update()">
+  </div>
+  </div>
+</body>
+</html>

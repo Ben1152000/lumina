@@ -1,9 +1,9 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 from flask_restful import Resource, Api
 from program import Program
 from multiprocessing import Process, Value
 from ctypes import c_bool
-import re
+import re, os, subprocess
 
 class ProgramProcess(Process):
 
@@ -32,11 +32,9 @@ current = ProgramProcess(name='idle', data=binaries['idle'])
 app = Flask(__name__)
 api = Api(app)
 
-class DashboardResource(Resource):
-    def get(self):
-        return "Hello, world!"
-
-api.add_resource(DashboardResource, '/')
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 class StatusResource(Resource):
     # GET /status/
@@ -135,4 +133,7 @@ api.add_resource(ColorResource, '/color/<string:value>')
 
 if __name__ == '__main__':
     current.start()
-    app.run()
+    app.secret_key = os.urandom(12)
+    host = subprocess.check_output(['/bin/hostname', '-I']).split()[0].strip().decode('utf-8')
+    print("Host:", host) # Right now this breaks under Darnell wifi
+    app.run(debug=False, use_reloader=False, host=host, port=7990) # change use_reloader to True when running
