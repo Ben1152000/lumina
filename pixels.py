@@ -17,27 +17,7 @@ class Pixels:
     WHITE   = (255, 255, 255)
 
     def __init__(self):
-        self.pixels = neopixel.NeoPixel(board.D18, 50, brightness=0.2)
-
-    # Easy-to-detect startup cycle
-    def startup(self):
-        cycle = [
-            Pixels.BLACK,
-            Pixels.RED,
-            Pixels.GREEN,
-            Pixels.BLUE,
-            Pixels.YELLOW,
-            Pixels.MAGENTA,
-            Pixels.CYAN,
-            Pixels.WHITE
-        ]
-        for color in cycle:
-            self.pixels.fill(color)
-            self.pixels.show()
-            time.sleep(0.05)
-        self.pixels.fill(Pixels.BLACK)
-        self.pixels.show()
-        time.sleep(0.5)
+        self.pixels = neopixel.NeoPixel(board.D18, 50, brightness=1)
 
     def length(self):
         return self.pixels.n
@@ -46,7 +26,7 @@ class Pixels:
         self.pixels[i] = ((r, b, g))
 
     def set_all_pixels(self, r, g, b):
-        self.pixels.fill((r, g, b))
+        self.pixels.fill((r, b, g))
 
     def get_pixel(self, i):
         return self.pixels[i]
@@ -60,8 +40,6 @@ class Pixels:
 if __name__ == "__main__":
     try:
         pixels = Pixels()
-        pixels.startup()
-        print(pixels.length())
         
         while True:
             time.sleep(0.05)
