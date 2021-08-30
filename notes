@@ -1,7 +1,7 @@
 // ISA based on code from the PWLP repo:
 // https://github.com/pixelspark/pwlp
 // which was authored by Tommy van der Vorst:
-// https://github.com/pixelspark/pwlp
+// https://github.com/pixelspark
 
 	opcode [0:4]	funct [5:8]	args/doc
 0x0*	POP		*		removes *th item from stack
