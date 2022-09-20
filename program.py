@@ -1,5 +1,4 @@
 from collections import deque
-from pixels import Pixels
 from time import time, sleep
 import math
 
@@ -8,12 +7,29 @@ class ProgramError(Exception):
 
 class Program:
 
-    def __init__(self, name: str, data: bytes, debug: bool = False):
+    class Pixels:
+        """Placeholder class to mimic the arduino/led functionality."""
+
+        def __init__(self, length=50):
+            self.pixels = [(0, 0, 0) for i in range(length)]
+
+        def length(self):
+            return len(self.pixels)
+
+        def set_pixel(self, r, g, b, i):
+            self.pixels[i] = ((r, b, g))
+
+        def set_all_pixels(self, r, g, b):
+            self.pixels = [(r, b, g) for i in range(length)]
+
+        def get_pixel(self, i):
+            return self.pixels[i]
+
+    def __init__(self, name: str, data: bytes, debug: bool = False, pixels = None):
         self.name = name
         self.data = data
         self.debug = debug
-
-        self.pixels = Pixels()
+        self.pixels = pixels if pixels is not None else Program.Pixels()
 
         self.OPCODES = {
             0x0: self.POP,
