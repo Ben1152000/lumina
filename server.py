@@ -1,6 +1,7 @@
 from flask import Flask, request, abort, render_template
 from flask_restful import Resource, Api
 from program import Program
+from pixels import Pixels
 from multiprocessing import Process, Pipe
 from ctypes import c_bool
 import re, os, subprocess
@@ -10,7 +11,7 @@ class ProgramProcess(Process):
     def __init__(self, name, data):
         super().__init__()
         self.pipe_in, self.pipe_out = Pipe()
-        self.program = Program(name=name, data=data)
+        self.program = Program(name=name, data=data, pixels=Pixels())
 
     def run(self):
         while True:
@@ -101,7 +102,8 @@ class ExecuteProgramResource(Resource):
             abort(404, "The program does not exist.")
         current.pipe_in.send(Program(
             name=name,
-            data=binaries[name]
+            data=binaries[name],
+            pixels=Pixels()
         ))
         return '', 204
 
@@ -122,7 +124,8 @@ class ColorResource(Resource):
             name='color', data=bytes(
             [0x31,    r,    g,    b,
              0x00, 0xe7, 0x11, 0x0a,
-             0xf9, 0x40, 0x06, 0x00])
+             0xf9, 0x40, 0x06, 0x00]),
+            pixels=Pixels()
         ))
         return '', 204
 
