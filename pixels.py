@@ -17,7 +17,7 @@ class Pixels:
     WHITE   = (255, 255, 255)
 
     def __init__(self):
-        self.pixels = neopixel.NeoPixel(board.D18, 50, brightness=1)
+        self.pixels = neopixel.NeoPixel(board.D18, 150, brightness=1)
 
     def length(self):
         return self.pixels.n

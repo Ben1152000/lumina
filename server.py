@@ -21,7 +21,7 @@ class ProgramProcess(Process):
                 assert type(self.program) == Program
 
 binaries = {}
-BUILTIN = ['idle', 'rainbow']
+BUILTIN = ['idle', 'rainbow', 'life']
 for name in BUILTIN:
     with open(f'programs/{name}.bin', 'rb') as binary:
         binaries[name] = binary.read()
@@ -131,6 +131,9 @@ api.add_resource(ColorResource, '/color/<string:value>')
 if __name__ == '__main__':
     current.start()
     app.secret_key = os.urandom(12)
-    host = subprocess.check_output(['/bin/hostname', '-I']).split()[0].strip().decode('utf-8')
+    try:
+        host = subprocess.check_output(['/bin/hostname', '-I']).split()[0].strip().decode('utf-8')
+    except IndexError:
+        raise Exception(subprocess.check_output(['/bin/hostname', '-I']))
     print("Host:", host) # Right now this breaks under Darnell wifi
-    app.run(debug=False, use_reloader=False, host=host, port=7990) # change use_reloader to True when running
+    app.run(debug=False, use_reloader=False, host=host, port=8010) # change use_reloader to True when running

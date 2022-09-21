@@ -310,6 +310,8 @@ class Program:
             print('\tMOD')
         right = self.stack.popleft()
         left = self.stack.popleft()
+        if (self.debug):
+            print(f'\t{left}%{right}')
         self.stack.appendleft(left % right)
 
     def AND(self):
@@ -461,7 +463,9 @@ class Program:
             print('\tget_pixel')
         if len(self.stack) < 1:
             raise ProgramError(f"Not enough items in stack.")
-        self.stack.appendleft(self.pixels.get_pixel(self.stack[0]))
+        r, g, b = self.pixels.get_pixel(self.stack.popleft())
+        color = (b << 16) + (g << 8) + (r)
+        self.stack.appendleft(color)
 
     def set_all_pixels(self):
         if (self.debug):
@@ -517,7 +521,7 @@ class Program:
 if __name__ == "__main__":
     
     try:
-        name = 'rainbow'
+        name = 'life'
 
         with open(f'programs/{name}.bin', 'rb') as binary:
             data = binary.read()

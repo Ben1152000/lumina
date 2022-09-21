@@ -4,17 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>Lumina</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
   <style>
     .color-container {
-      display: table;
-      margin: auto;
-      margin-top: 10rem;
-      padding: 1rem 1.5rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      width: 16rem;
       background-color: white;
-    }
-    .slider-container {
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
     }
   </style>
   <script>
@@ -28,22 +27,39 @@
       var color_string = color.toString(16).padStart(6, '0');
       document.body.style.backgroundColor = '#' + color_string;
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://192.168.1.2:7990/color/" + color_string, true);
+      xhr.open("POST", "/color/" + color_string, true);
       xhr.send();
+    }
+    function update_program() {
+      var program_string = document.getElementById('program-select').value;
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/execute/" + program_string, true);
+      xhr.send();
+      alert('Running program: ' + program_string);
     }
   </script>
 </head>
 <body>
-  <div class="color-container">
-  <div class="slider-container">
-    <input type="range" min="0" max="255" value="255" class="slider" id="red" oninput="update()">
-  </div>
-  <div class="slider-container">
-    <input type="range" min="0" max="255" value="255" class="slider" id="green" oninput="update()">
-  </div>
-  <div class="slider-container">
-    <input type="range" min="0" max="255" value="255" class="slider" id="blue" oninput="update()">
-  </div>
+  <div class="color-container p-4">
+    <div class="mb-2">
+      <input class="form-range" type="range" min="0" max="255" value="0" class="slider" id="red" oninput="update()">
+      <input class="form-range" type="range" min="0" max="255" value="0" class="slider" id="green" oninput="update()">
+      <input class="form-range" type="range" min="0" max="255" value="0" class="slider" id="blue" oninput="update()">
+    </div>
+    <div class="input-group">
+      <select class="form-select" name="programs" id="program-select">
+        <option value="idle">Idle</option>
+        <option value="rainbow">Rainbow</option>
+        <option value="life">Life</option>
+      </select>
+      <button class="btn btn-primary" type="button"
+              onclick="update_program()">
+        Run
+      </button>
+    </div>
   </div>
 </body>
+<script>
+  update();
+</script>
 </html>
