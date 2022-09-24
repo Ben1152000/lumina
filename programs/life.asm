@@ -18,7 +18,7 @@ inner_loop:
 	MOD                # [1, a, 0, ffffff00]
 	get_pixel          # [c, a, 0, ffffff00]
 	XOR                # [x, 0, ffffff00]
-	JZ 0x1b #if_then
+	JZ if_then
 
 	POP 1              # [0, ffffff00]
 	PEEK 1             # [ffffff00, 0, ffffff00]
@@ -29,14 +29,13 @@ if_then:
 	PEEK 0             # [1, 1, ffffff00]
 	get_length         # [len, 1, 1, ffffff00]
 	SUB                # [len-1, 1, ffffff00]
-	JNZ 0x27 #continue
+	JNZ continue
 
 	POP 2              # [ffffff00]
-	JMP 0xa #loop
+	JMP loop
 
 continue:
 	POP 1              # [1, ffffff00]
 	PUSHB 10           # [10, 1, ffffff00]
 	sleep
-	JMP 0xb #inner_loop
-
+	JMP inner_loop

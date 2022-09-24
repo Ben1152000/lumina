@@ -93,10 +93,16 @@ class Assembler:
             lambda tokens, tree: tokens + (tree.children),
             map(Assembler.parser.parse, source.split("\n")),
             list(),
-        )
+        )  # use lark to parse source string
 
         pointer = 0  # pointer to byte index
-        labels = dict()  # map from label to index
+        labels = dict(
+            map(
+                lambda token: (token.value, None),
+                filter(lambda token: token.type == "LABEL", tokens),
+            )
+        )  # map from label to index
+        jumps = dict()
         data = bytearray()
 
         iterator = iter(tokens)
@@ -129,9 +135,13 @@ class Assembler:
                         elif arg.type == "LABEL":
                             if arg.value not in labels:
                                 raise ParseError(
-                                    f"Cannot jump to undeclared label: {arg.value}"
+                                    f"Cannot jump to unused label: {arg.value}"
                                 )
-                            value = labels[arg.value]
+                            if labels[arg.value] is None:  # label not defined yet
+                                value = 0xADDE  # placeholder for forward jumps
+                                jumps[pointer] = arg.value
+                            else:
+                                value = labels[arg.value]
                         else:
                             raise ParseError(
                                 f"Invalid argument type for {token.value} instruction."
@@ -146,8 +156,13 @@ class Assembler:
             else:
                 raise ParseError(f"Unexpected token: {token.value}")
             token = next(iterator, None)
-        
+
+        for jump, label in jumps.items():
+            addr = labels[label]
+            data[jump : jump + 2] = addr.to_bytes(2, "little")
+
         return data
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
