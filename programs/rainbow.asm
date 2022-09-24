@@ -1,14 +1,17 @@
 start:
+# get time in ms and divide by 1000
   get_precise_time
   PEEK 0
   PUSHW 1000
   FDIV
+# take the sin and rescale to [0, 255]
   SIN
   PUSHB 0x1
   ADD
   PUSHB 0x7f
   MUL
   FLOOR
+#
   PEEK 1
   PUSHW 0x82e
   ADD
