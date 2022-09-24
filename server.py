@@ -66,11 +66,11 @@ class ModifyProgramResource(Resource):
     # upload a program
     def post(self, name):
         global binaries
-        if 'data' not in request.form:
-            abort(400, "Required data header not found.")
+        if not request.data:
+            abort(400, "Binary data required.")
         if name in BUILTIN:
             abort(403, f"Program {name} cannot be modified.")
-        binaries[name] = request.form['data']
+        binaries[name] = request.data
         return '', 204
 
     # DELETE /programs/<name>
