@@ -157,5 +157,9 @@ if __name__ == "__main__":
 
     with open(args.infile, "r") as sourcefile:
         source = sourcefile.read()
-    with open(args.outfile, "wb") as progfile:
-        progfile.write(Assembler.assemble(source))
+    binary = Assembler.assemble(source)
+    if args.outfile:
+        with open(args.outfile, "wb") as progfile:
+            progfile.write(binary)
+    else:
+        sys.stdout.buffer.write(binary)
